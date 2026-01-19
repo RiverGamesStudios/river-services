@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +20,7 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         /* General styling for message area */
         .message {
             margin-top: 1rem;
@@ -27,29 +29,35 @@
             font-size: 0.9rem;
             text-align: left;
         }
+
         .message.success {
             background-color: #d1fae5;
             color: #065f46;
             border: 1px solid #34d399;
         }
+
         .message.error {
             background-color: #fee2e2;
             color: #991b1b;
             border: 1px solid #ef4444;
         }
+
         .hidden {
             display: none;
         }
+
         body {
             background: url("bg.jpg");
             background-size: cover;
             background-position: center;
         }
+
         /* Style for blurring the link code */
         .blur-sm {
             filter: blur(4px);
             transition: filter 0.2s ease-in-out;
         }
+
         .no-blur {
             filter: blur(0);
             transition: filter 0.2s ease-in-out;
@@ -58,24 +66,32 @@
         /* Spinner Styles */
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #3b82f6; /* Tailwind blue-500 */
+            border-left-color: #3b82f6;
+            /* Tailwind blue-500 */
             border-radius: 50%;
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 10px auto; /* Center the spinner and add some space */
+            margin: 0 auto 10px auto;
+            /* Center the spinner and add some space */
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center" style="margin: 10px;">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">River Services</h1><br><br>
-        
+
         <!-- Loading Indicator with Spinner -->
         <div id="loading-indicator" class="text-gray-600 text-lg mb-4">
             <div class="spinner"></div>
@@ -86,36 +102,72 @@
         <div id="service-management-container" class="hidden">
             <h3 class="text-2xl font-bold mb-6 text-gray-800">Tank Ball Physics</h3>
             <p id="tbp-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
-                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="tbp-code-span"></span><br> 
-                <button id="toggle-code-visibility" class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show Code</button>
-                <button id="copy-code-button" class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
+                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="tbp-code-span"></span><br>
+                <button id="toggle-code-visibility"
+                    class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show
+                    Code</button>
+                <button id="copy-code-button"
+                    class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
             </p>
-            <button id="enable-tbp-button" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable Service</button><br><br><hr>
+            <button id="enable-tbp-button"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable
+                Service</button><br><br>
+            <hr>
 
             <!-- STBG Service Section -->
             <h3 class="text-2xl font-bold mb-6 text-gray-800 mt-8">Survival the Ball Game</h3>
             <p id="stbg-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
-                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="stbg-code-span"></span><br> 
-                <button id="toggle-stbg-code-visibility" class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show Code</button>
-                <button id="copy-stbg-code-button" class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
+                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="stbg-code-span"></span><br>
+                <button id="toggle-stbg-code-visibility"
+                    class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show
+                    Code</button>
+                <button id="copy-stbg-code-button"
+                    class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
             </p>
-            <button id="enable-stbg-button" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable Service</button><br><br><hr>
+            <button id="enable-stbg-button"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable
+                Service</button><br><br>
+            <hr>
             <!-- End STBG Service Section -->
 
             <!-- DIAC Service Section -->
             <h3 class="text-2xl font-bold mb-6 text-gray-800 mt-8">Die in a Cellar</h3>
             <p id="diac-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
-                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="diac-code-span"></span><br> 
-                <button id="toggle-diac-code-visibility" class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show Code</button>
-                <button id="copy-diac-code-button" class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
+                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="diac-code-span"></span><br>
+                <button id="toggle-diac-code-visibility"
+                    class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show
+                    Code</button>
+                <button id="copy-diac-code-button"
+                    class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
             </p>
-            <button id="enable-diac-button" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable Service</button><br><br><hr>
+            <button id="enable-diac-button"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable
+                Service</button><br><br>
+            <hr>
             <!-- End DIAC Service Section -->
+
+            <!-- BEATRIX Service Section -->
+            <h3 class="text-2xl font-bold mb-6 text-gray-800 mt-8">Beatrix</h3>
+            <p id="beatrix-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
+                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="beatrix-code-span"></span><br>
+                <button id="toggle-beatrix-code-visibility"
+                    class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show
+                    Code</button>
+                <button id="copy-beatrix-code-button"
+                    class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
+            </p>
+            <button id="enable-beatrix-button"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable
+                Service</button><br><br>
+            <hr>
+            <!-- End BEATRIX Service Section -->
         </div>
 
         <div id="message-area-services" class="mt-4 p-3 rounded-lg text-sm text-left hidden"></div>
-        
-        <a href="account.html"><button class="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition duration-200 mt-4">Back to Account</button></a>
+
+        <a href="account.html"><button
+                class="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition duration-200 mt-4">Back
+                to Account</button></a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
@@ -126,7 +178,7 @@
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZXdhYmFxcmhreHZweWRyampoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzOTY4MzAsImV4cCI6MjA2Mzk3MjgzMH0.8ClAfvkOqELoBa2lx-ylhStEJjg8KFVlA3IhF5CdSXE';
 
             let supabaseClient;
-            const messageAreaServices = document.getElementById('message-area-services'); 
+            const messageAreaServices = document.getElementById('message-area-services');
             const serviceManagementContainer = document.getElementById('service-management-container');
             const loadingIndicator = document.getElementById('loading-indicator'); // Get reference to loading indicator
 
@@ -150,6 +202,13 @@
             const diacLinkCodeSpan = document.getElementById('diac-code-span');
             const toggleDIACCodeVisibilityButton = document.getElementById('toggle-diac-code-visibility');
             const copyDIACCodeButton = document.getElementById('copy-diac-code-button');
+
+            // BEATRIX Elements
+            const enableBEATRIXButton = document.getElementById('enable-beatrix-button');
+            const beatrixLinkDisplay = document.getElementById('beatrix-link-display');
+            const beatrixLinkCodeSpan = document.getElementById('beatrix-code-span');
+            const toggleBEATRIXCodeVisibilityButton = document.getElementById('toggle-beatrix-code-visibility');
+            const copyBEATRIXCodeButton = document.getElementById('copy-beatrix-code-button');
 
             let currentTBPLinkCode = null;
             let isTBPCodeVisible = false;
@@ -301,6 +360,27 @@
                 }
             }
 
+            // Function to set the visual state of the BEATRIX button and link display
+            function setBEATRIXButtonState(state) {
+                if (state === 'enabled') {
+                    enableBEATRIXButton.textContent = 'Disable Service';
+                    enableBEATRIXButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                    enableBEATRIXButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                    beatrixLinkDisplay.classList.remove('hidden');
+                    beatrixLinkCodeSpan.classList.add('blur-sm');
+                    beatrixLinkCodeSpan.classList.remove('no-blur');
+                    toggleBEATRIXCodeVisibilityButton.textContent = 'Show Code';
+                    isBEATRIXCodeVisible = false;
+                } else {
+                    enableBEATRIXButton.textContent = 'Enable Service';
+                    enableBEATRIXButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    enableBEATRIXButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                    beatrixLinkDisplay.classList.add('hidden');
+                    beatrixLinkCodeSpan.textContent = '';
+                    currentBEATRIXLinkCode = null;
+                }
+            }
+
             // Function to check session and update UI, specific for services.html
             async function checkSessionAndLoadServices() {
                 console.log('Checking session on services page...');
@@ -319,6 +399,8 @@
                         await checkSTBGServiceStatus(user.id);
                         // And check DIAC service status for this user
                         await checkDIACServiceStatus(user.id);
+                        // And check BEATRIX service status for this user
+                        await checkBEATRIXServiceStatus(user.id);
 
                         // All data loaded, hide loading and show content
                         loadingIndicator.classList.add('hidden');
@@ -329,7 +411,7 @@
                     showMessage('An unexpected error occurred during session check. Please try again.', 'error', messageAreaServices);
                     // Critical error during user fetch, redirect to login page
                     loadingIndicator.classList.add('hidden'); // Hide loading even on error
-                    window.location.href = 'magic.html';
+                    window.location.href = 'login';
                 }
             }
 
@@ -489,6 +571,31 @@
                 } else {
                     currentDIACLinkCode = null;
                     setDIACButtonState('disabled');
+                }
+            }
+
+            // Function to check BEATRIX service status for a specific user
+            async function checkBEATRIXServiceStatus(userId) {
+                console.log('Checking BEATRIX service status for user:', userId);
+                const { data: beatrixService, error: beatrixError } = await supabaseClient
+                    .from('beatrix_user_data')
+                    .select('LinkCode')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (beatrixError && beatrixError.code !== 'PGRST116') {
+                    console.error('Error fetching BEATRIX service status:', beatrixError);
+                    setBEATRIXButtonState('disabled');
+                    return;
+                }
+
+                if (beatrixService) {
+                    currentBEATRIXLinkCode = beatrixService.LinkCode;
+                    beatrixLinkCodeSpan.textContent = currentBEATRIXLinkCode;
+                    setBEATRIXButtonState('enabled');
+                } else {
+                    currentBEATRIXLinkCode = null;
+                    setBEATRIXButtonState('disabled');
                 }
             }
 
@@ -718,6 +825,77 @@
                 await checkDIACServiceStatus(user.id);
             });
 
+            // BEATRIX Enable/Disable Service
+            enableBEATRIXButton.addEventListener('click', async () => {
+                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+                if (sessionError || !session) {
+                    window.location.href = 'magic.html';
+                    return;
+                }
+                const { data: { user } } = session;
+                if (!user) {
+                    console.error('User not found in session.');
+                    window.location.href = 'magic.html';
+                    return;
+                }
+
+                if (enableBEATRIXButton.textContent === 'Enable Service') {
+                    // Enable BEATRIX service
+                    setButtonLoading(true, enableBEATRIXButton, 'Enable Service', 'Enabling...');
+                    try {
+                        const { data: { user } } = await supabaseClient.auth.getUser();
+                        const currentDisplayName = user.user_metadata.display_name || user.email;
+                        const linkCode = generateLinkCode();
+                        const { error } = await supabaseClient
+                            .from('beatrix_user_data')
+                            .insert({
+                                user_id: user.id,
+                                LinkCode: linkCode,
+                                username: currentDisplayName
+                            });
+                        if (error) {
+                            console.error('Error enabling BEATRIX service:', error);
+                            showMessage(`Failed to enable BEATRIX service: ${error.message}`, 'error', messageAreaServices);
+                        } else {
+                            console.log('BEATRIX Service enabled successfully.');
+                            showMessage('BEATRIX service enabled successfully!', 'success', messageAreaServices);
+                            currentBEATRIXLinkCode = linkCode;
+                            beatrixLinkCodeSpan.textContent = currentBEATRIXLinkCode;
+                            setBEATRIXButtonState('enabled');
+                        }
+                    } catch (err) {
+                        console.error('Unexpected error during BEATRIX service enablement:', err);
+                        showMessage('An unexpected error occurred while enabling BEATRIX service.', 'error', messageAreaServices);
+                    } finally {
+                        setButtonLoading(false, enableBEATRIXButton, 'Enable Service', 'Enabling...');
+                    }
+                } else {
+                    // Disable BEATRIX service
+                    setButtonLoading(true, enableBEATRIXButton, 'Disable Service', 'Disabling...');
+                    try {
+                        const { error } = await supabaseClient
+                            .from('beatrix_user_data') // Changed table name
+                            .delete()
+                            .eq('user_id', user.id)
+                            .eq('LinkCode', currentBEATRIXLinkCode);
+                        if (error) {
+                            console.error('Error disabling BEATRIX service:', error);
+                            showMessage(`Failed to disable BEATRIX service: ${error.message}`, 'error', messageAreaServices);
+                        } else {
+                            console.log('BEATRIX Service disabled successfully.');
+                            showMessage('BEATRIX service disabled successfully!', 'success', messageAreaServices);
+                            currentBEATRIXLinkCode = null;
+                            setBEATRIXButtonState('disabled');
+                        }
+                    } catch (err) {
+                        console.error('Unexpected error during BEATRIX service disablement:', err);
+                        showMessage('An unexpected error occurred while disabling BEATRIX service.', 'error', messageAreaServices);
+                    } finally {
+                        setButtonLoading(false, enableBEATRIXButton, 'Disable Service', 'Disabling...');
+                    }
+                }
+                await checkBEATRIXServiceStatus(user.id);
+            });
 
             // TBP Show/Hide Code
             toggleCodeVisibilityButton.addEventListener('click', () => {
@@ -809,6 +987,36 @@
                 }
             });
 
+            // BEATRIX Show/Hide Code
+            toggleBEATRIXCodeVisibilityButton.addEventListener('click', () => {
+                if (isBEATRIXCodeVisible) {
+                    beatrixLinkCodeSpan.classList.add('blur-sm');
+                    beatrixLinkCodeSpan.classList.remove('no-blur');
+                    toggleBEATRIXCodeVisibilityButton.textContent = 'Show Code';
+                } else {
+                    beatrixLinkCodeSpan.classList.remove('blur-sm');
+                    beatrixLinkCodeSpan.classList.add('no-blur');
+                    toggleBEATRIXCodeVisibilityButton.textContent = 'Hide Code';
+                }
+                isBEATRIXCodeVisible = !isBEATRIXCodeVisible;
+            });
+
+            // Copy BEATRIX Code
+            copyBEATRIXCodeButton.addEventListener('click', async () => {
+                if (currentBEATRIXLinkCode) {
+                    try {
+                        const tempInput = document.createElement('textarea');
+                        tempInput.value = currentBEATRIXLinkCode;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempInput);
+                    } catch (err) {
+                        console.error('Failed to copy BEATRIX text:', err);
+                    }
+                }
+            });
+
             // Listen for auth state changes specific to the services page
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 console.log('Auth state change detected on services page:', event, session);
@@ -828,4 +1036,5 @@
         });
     </script>
 </body>
+
 </html>
