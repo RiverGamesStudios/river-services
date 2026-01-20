@@ -574,17 +574,28 @@
                 }
             }
 
-            // Function to check BEATRIX service status for a specific user
+            /**
+             * Checks if the BEATRIX service is enabled for the given user.
+             * Updates the button state and stores the LinkCode if found.
+             * Also updates the username in beatrix_user_data if it has changed.
+             * @param {string} userId - The UUID of the current user.
+             */
             async function checkBEATRIXServiceStatus(userId) {
-                console.log('Checking BEATRIX service status for user:', userId);
-                const { data: beatrixService, error: beatrixError } = await supabaseClient
+                console.log('Checking BEATRIX service status...');
+                if (!userId) {
+                    console.warn('User ID not available for checking BEATRIX service status.');
+                    setBEATRIXButtonState('disabled');
+                    return;
+                }
+
+                const { data: beatrixService, error } = await supabaseClient
                     .from('beatrix_user_data')
-                    .select('LinkCode')
+                    .select('LinkCode, username')
                     .eq('user_id', userId)
                     .single();
 
-                if (beatrixError && beatrixError.code !== 'PGRST116') {
-                    console.error('Error fetching BEATRIX service status:', beatrixError);
+                if (error && error.code !== 'PGRST116') {
+                    console.error('Error fetching BEATRIX service status:', error);
                     setBEATRIXButtonState('disabled');
                     return;
                 }
@@ -593,6 +604,23 @@
                     currentBEATRIXLinkCode = beatrixService.LinkCode;
                     beatrixLinkCodeSpan.textContent = currentBEATRIXLinkCode;
                     setBEATRIXButtonState('enabled');
+
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    const currentDisplayName = user.user_metadata.display_name || user.email;
+
+                    if (beatrixService.username !== currentDisplayName) {
+                        console.log('BEATRIX username out of sync. Updating...');
+                        const { error: updateError } = await supabaseClient
+                            .from('beatrix_user_data')
+                            .update({ username: currentDisplayName })
+                            .eq('user_id', userId);
+
+                        if (updateError) {
+                            console.error('Error updating BEATRIX username:', updateError.message);
+                        } else {
+                            console.log('BEATRIX username updated successfully.');
+                        }
+                    }
                 } else {
                     currentBEATRIXLinkCode = null;
                     setBEATRIXButtonState('disabled');
@@ -840,6 +868,9 @@
                 }
 
                 if (enableBEATRIXButton.textContent === 'Enable Service') {
+                    const confirmTOS = confirm("By enabling this service, you agree to the BEATRIX Terms of Service.");
+                    if (!confirmTOS) { return; }
+                    console.log('Enable Service button clicked for BEATRIX.');
                     // Enable BEATRIX service
                     setButtonLoading(true, enableBEATRIXButton, 'Enable Service', 'Enabling...');
                     try {
@@ -870,11 +901,14 @@
                         setButtonLoading(false, enableBEATRIXButton, 'Enable Service', 'Enabling...');
                     }
                 } else {
+                    const confirmDeactivation = confirm("Disabling this service will make you lose all the data you saved with it. Are you sure you want to disable it?");
+                    if (!confirmDeactivation) { return; }
+                    console.log('Disable BEATRIX Service button clicked.');
                     // Disable BEATRIX service
                     setButtonLoading(true, enableBEATRIXButton, 'Disable Service', 'Disabling...');
                     try {
                         const { error } = await supabaseClient
-                            .from('beatrix_user_data') // Changed table name
+                            .from('beatrix_user_data')
                             .delete()
                             .eq('user_id', user.id)
                             .eq('LinkCode', currentBEATRIXLinkCode);
