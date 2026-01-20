@@ -146,7 +146,7 @@
             <hr>
             <!-- End DIAC Service Section -->
 
-            <!-- BEATRIX Service Section -->
+            <!-- Beatrix Service Section -->
             <h3 class="text-2xl font-bold mb-6 text-gray-800 mt-8">Beatrix</h3>
             <p id="beatrix-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
                 Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="beatrix-code-span"></span><br>
@@ -160,7 +160,7 @@
                 class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable
                 Service</button><br><br>
             <hr>
-            <!-- End BEATRIX Service Section -->
+            <!-- End Beatrix Service Section -->
         </div>
 
         <div id="message-area-services" class="mt-4 p-3 rounded-lg text-sm text-left hidden"></div>
@@ -203,12 +203,12 @@
             const toggleDIACCodeVisibilityButton = document.getElementById('toggle-diac-code-visibility');
             const copyDIACCodeButton = document.getElementById('copy-diac-code-button');
 
-            // BEATRIX Elements
-            const enableBEATRIXButton = document.getElementById('enable-beatrix-button');
+            // Beatrix Elements
+            const enableBeatrixButton = document.getElementById('enable-beatrix-button');
             const beatrixLinkDisplay = document.getElementById('beatrix-link-display');
             const beatrixLinkCodeSpan = document.getElementById('beatrix-code-span');
-            const toggleBEATRIXCodeVisibilityButton = document.getElementById('toggle-beatrix-code-visibility');
-            const copyBEATRIXCodeButton = document.getElementById('copy-beatrix-code-button');
+            const toggleBeatrixCodeVisibilityButton = document.getElementById('toggle-beatrix-code-visibility');
+            const copyBeatrixCodeButton = document.getElementById('copy-beatrix-code-button');
 
             let currentTBPLinkCode = null;
             let isTBPCodeVisible = false;
@@ -218,6 +218,9 @@
 
             let currentDIACLinkCode = null;
             let isDIACCodeVisible = false;
+
+            let currentBeatrixLinkCode = null;
+            let isBeatrixCodeVisible = false;
 
 
             /**
@@ -360,24 +363,23 @@
                 }
             }
 
-            // Function to set the visual state of the BEATRIX button and link display
-            function setBEATRIXButtonState(state) {
+            function setBeatrixButtonState(state) {
                 if (state === 'enabled') {
-                    enableBEATRIXButton.textContent = 'Disable Service';
-                    enableBEATRIXButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-                    enableBEATRIXButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                    enableBeatrixButton.textContent = 'Disable Service';
+                    enableBeatrixButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                    enableBeatrixButton.classList.add('bg-red-500', 'hover:bg-red-600');
                     beatrixLinkDisplay.classList.remove('hidden');
                     beatrixLinkCodeSpan.classList.add('blur-sm');
                     beatrixLinkCodeSpan.classList.remove('no-blur');
-                    toggleBEATRIXCodeVisibilityButton.textContent = 'Show Code';
-                    isBEATRIXCodeVisible = false;
+                    toggleBeatrixCodeVisibilityButton.textContent = 'Show Code';
+                    isBeatrixCodeVisible = false;
                 } else {
-                    enableBEATRIXButton.textContent = 'Enable Service';
-                    enableBEATRIXButton.classList.remove('bg-red-500', 'hover:bg-red-600');
-                    enableBEATRIXButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                    enableBeatrixButton.textContent = 'Enable Service';
+                    enableBeatrixButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    enableBeatrixButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
                     beatrixLinkDisplay.classList.add('hidden');
                     beatrixLinkCodeSpan.textContent = '';
-                    currentBEATRIXLinkCode = null;
+                    currentBeatrixLinkCode = null;
                 }
             }
 
@@ -399,8 +401,8 @@
                         await checkSTBGServiceStatus(user.id);
                         // And check DIAC service status for this user
                         await checkDIACServiceStatus(user.id);
-                        // And check BEATRIX service status for this user
-                        await checkBEATRIXServiceStatus(user.id);
+                        // And check Beatrix service status for this user
+                        await checkBeatrixServiceStatus(user.id);
 
                         // All data loaded, hide loading and show content
                         loadingIndicator.classList.add('hidden');
@@ -574,17 +576,11 @@
                 }
             }
 
-            /**
-             * Checks if the BEATRIX service is enabled for the given user.
-             * Updates the button state and stores the LinkCode if found.
-             * Also updates the username in beatrix_user_data if it has changed.
-             * @param {string} userId - The UUID of the current user.
-             */
-            async function checkBEATRIXServiceStatus(userId) {
-                console.log('Checking BEATRIX service status...');
+            async function checkBeatrixServiceStatus(userId) {
+                console.log('Checking Beatrix service status...');
                 if (!userId) {
-                    console.warn('User ID not available for checking BEATRIX service status.');
-                    setBEATRIXButtonState('disabled');
+                    console.warn('User ID not available for checking Beatrix service status.');
+                    setBeatrixButtonState('disabled');
                     return;
                 }
 
@@ -595,35 +591,35 @@
                     .single();
 
                 if (error && error.code !== 'PGRST116') {
-                    console.error('Error fetching BEATRIX service status:', error);
-                    setBEATRIXButtonState('disabled');
+                    console.error('Error fetching Beatrix service status:', error);
+                    setBeatrixButtonState('disabled');
                     return;
                 }
 
                 if (beatrixService) {
-                    currentBEATRIXLinkCode = beatrixService.LinkCode;
-                    beatrixLinkCodeSpan.textContent = currentBEATRIXLinkCode;
-                    setBEATRIXButtonState('enabled');
+                    currentBeatrixLinkCode = beatrixService.LinkCode;
+                    beatrixLinkCodeSpan.textContent = currentBeatrixLinkCode;
+                    setBeatrixButtonState('enabled');
 
                     const { data: { user } } = await supabaseClient.auth.getUser();
                     const currentDisplayName = user.user_metadata.display_name || user.email;
 
                     if (beatrixService.username !== currentDisplayName) {
-                        console.log('BEATRIX username out of sync. Updating...');
+                        console.log('Beatrix username out of sync. Updating...');
                         const { error: updateError } = await supabaseClient
                             .from('beatrix_user_data')
                             .update({ username: currentDisplayName })
                             .eq('user_id', userId);
 
                         if (updateError) {
-                            console.error('Error updating BEATRIX username:', updateError.message);
+                            console.error('Error updating Beatrix username:', updateError.message);
                         } else {
-                            console.log('BEATRIX username updated successfully.');
+                            console.log('Beatrix username updated successfully.');
                         }
                     }
                 } else {
-                    currentBEATRIXLinkCode = null;
-                    setBEATRIXButtonState('disabled');
+                    currentBeatrixLinkCode = null;
+                    setBeatrixButtonState('disabled');
                 }
             }
 
@@ -853,82 +849,72 @@
                 await checkDIACServiceStatus(user.id);
             });
 
-            // BEATRIX Enable/Disable Service
-            enableBEATRIXButton.addEventListener('click', async () => {
+            enableBeatrixButton.addEventListener('click', async () => {
                 const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
                 if (sessionError || !session) {
                     window.location.href = 'magic.html';
                     return;
                 }
-                const { data: { user } } = session;
+                const user = session.user;
                 if (!user) {
-                    console.error('User not found in session.');
                     window.location.href = 'magic.html';
                     return;
                 }
 
-                if (enableBEATRIXButton.textContent === 'Enable Service') {
-                    const confirmTOS = confirm("By enabling this service, you agree to the BEATRIX Terms of Service.");
+                if (enableBeatrixButton.textContent === 'Enable Service') {
+                    const confirmTOS = confirm("By enabling this service, you agree to the Beatrix Terms of Service"); // Placeholder TOS
                     if (!confirmTOS) { return; }
-                    console.log('Enable Service button clicked for BEATRIX.');
-                    // Enable BEATRIX service
-                    setButtonLoading(true, enableBEATRIXButton, 'Enable Service', 'Enabling...');
+                    console.log('Enable Service button clicked for Beatrix.');
+                    setButtonLoading(true, enableBeatrixButton, 'Enable Service', 'Enabling...');
                     try {
-                        const { data: { user } } = await supabaseClient.auth.getUser();
-                        const currentDisplayName = user.user_metadata.display_name || user.email;
-                        const linkCode = generateLinkCode();
-                        const { error } = await supabaseClient
+                        const newCode = generateLinkCode();
+                        const { data, error } = await supabaseClient
                             .from('beatrix_user_data')
-                            .insert({
-                                user_id: user.id,
-                                LinkCode: linkCode,
-                                username: currentDisplayName
-                            });
+                            .insert([{ LinkCode: newCode, user_id: user.id, username: user.user_metadata.display_name || user.email }]);
                         if (error) {
-                            console.error('Error enabling BEATRIX service:', error);
-                            showMessage(`Failed to enable BEATRIX service: ${error.message}`, 'error', messageAreaServices);
+                            console.error('Error inserting Beatrix Link Code:', error);
+                            showMessage(`Failed to enable Beatrix service: ${error.message}`, 'error', messageAreaServices);
                         } else {
-                            console.log('BEATRIX Service enabled successfully.');
-                            showMessage('BEATRIX service enabled successfully!', 'success', messageAreaServices);
-                            currentBEATRIXLinkCode = linkCode;
-                            beatrixLinkCodeSpan.textContent = currentBEATRIXLinkCode;
-                            setBEATRIXButtonState('enabled');
+                            console.log('Beatrix Link Code inserted successfully:', data);
+                            showMessage('Beatrix service enabled successfully!', 'success', messageAreaServices);
+                            currentBeatrixLinkCode = newCode;
+                            beatrixLinkCodeSpan.textContent = currentBeatrixLinkCode;
+                            setBeatrixButtonState('enabled');
                         }
                     } catch (err) {
-                        console.error('Unexpected error during BEATRIX service enablement:', err);
-                        showMessage('An unexpected error occurred while enabling BEATRIX service.', 'error', messageAreaServices);
+                        console.error('Unexpected error during Beatrix service enablement:', err);
+                        showMessage('An unexpected error occurred while enabling Beatrix service.', 'error', messageAreaServices);
                     } finally {
-                        setButtonLoading(false, enableBEATRIXButton, 'Enable Service', 'Enabling...');
+                        setButtonLoading(false, enableBeatrixButton, 'Enable Service', 'Enabling...');
                     }
-                } else {
+                } else if (enableBeatrixButton.textContent === 'Disable Service') {
                     const confirmDeactivation = confirm("Disabling this service will make you lose all the data you saved with it. Are you sure you want to disable it?");
                     if (!confirmDeactivation) { return; }
-                    console.log('Disable BEATRIX Service button clicked.');
-                    // Disable BEATRIX service
-                    setButtonLoading(true, enableBEATRIXButton, 'Disable Service', 'Disabling...');
+                    console.log('Disable Beatrix Service button clicked.');
+                    setButtonLoading(true, enableBeatrixButton, 'Disable Service', 'Disabling...');
                     try {
                         const { error } = await supabaseClient
                             .from('beatrix_user_data')
                             .delete()
                             .eq('user_id', user.id)
-                            .eq('LinkCode', currentBEATRIXLinkCode);
+                            .eq('LinkCode', currentBeatrixLinkCode);
                         if (error) {
-                            console.error('Error disabling BEATRIX service:', error);
-                            showMessage(`Failed to disable BEATRIX service: ${error.message}`, 'error', messageAreaServices);
+                            console.error('Error disabling Beatrix service:', error);
+                            showMessage(`Failed to disable Beatrix service: ${error.message}`, 'error', messageAreaServices);
                         } else {
-                            console.log('BEATRIX Service disabled successfully.');
-                            showMessage('BEATRIX service disabled successfully!', 'success', messageAreaServices);
-                            currentBEATRIXLinkCode = null;
-                            setBEATRIXButtonState('disabled');
+                            console.log('Beatrix Service disabled successfully.');
+                            showMessage('Beatrix service disabled successfully!', 'success', messageAreaServices);
+                            currentBeatrixLinkCode = null;
+                            setBeatrixButtonState('disabled');
                         }
                     } catch (err) {
-                        console.error('Unexpected error during BEATRIX service disablement:', err);
-                        showMessage('An unexpected error occurred while disabling BEATRIX service.', 'error', messageAreaServices);
+                        console.error('Unexpected error during Beatrix service disablement:', err);
+                        showMessage('An unexpected error occurred while disabling Beatrix service.', 'error', messageAreaServices);
                     } finally {
-                        setButtonLoading(false, enableBEATRIXButton, 'Disable Service', 'Disabling...');
+                        setButtonLoading(false, enableBeatrixButton, 'Disable Service', 'Disabling...');
                     }
                 }
-                await checkBEATRIXServiceStatus(user.id);
+                await checkBeatrixServiceStatus(user.id);
             });
 
             // TBP Show/Hide Code
@@ -1021,32 +1007,32 @@
                 }
             });
 
-            // BEATRIX Show/Hide Code
-            toggleBEATRIXCodeVisibilityButton.addEventListener('click', () => {
-                if (isBEATRIXCodeVisible) {
+            // Beatrix Show/Hide Code
+            toggleBeatrixCodeVisibilityButton.addEventListener('click', () => {
+                if (isBeatrixCodeVisible) {
                     beatrixLinkCodeSpan.classList.add('blur-sm');
                     beatrixLinkCodeSpan.classList.remove('no-blur');
-                    toggleBEATRIXCodeVisibilityButton.textContent = 'Show Code';
+                    toggleBeatrixCodeVisibilityButton.textContent = 'Show Code';
                 } else {
                     beatrixLinkCodeSpan.classList.remove('blur-sm');
                     beatrixLinkCodeSpan.classList.add('no-blur');
-                    toggleBEATRIXCodeVisibilityButton.textContent = 'Hide Code';
+                    toggleBeatrixCodeVisibilityButton.textContent = 'Hide Code';
                 }
-                isBEATRIXCodeVisible = !isBEATRIXCodeVisible;
+                isBeatrixCodeVisible = !isBeatrixCodeVisible;
             });
 
-            // Copy BEATRIX Code
-            copyBEATRIXCodeButton.addEventListener('click', async () => {
-                if (currentBEATRIXLinkCode) {
+            // Copy Beatrix Code
+            copyBeatrixCodeButton.addEventListener('click', async () => {
+                if (currentBeatrixLinkCode) {
                     try {
                         const tempInput = document.createElement('textarea');
-                        tempInput.value = currentBEATRIXLinkCode;
+                        tempInput.value = currentBeatrixLinkCode;
                         document.body.appendChild(tempInput);
                         tempInput.select();
                         document.execCommand('copy');
                         document.body.removeChild(tempInput);
                     } catch (err) {
-                        console.error('Failed to copy BEATRIX text:', err);
+                        console.error('Failed to copy Beatrix text:', err);
                     }
                 }
             });
