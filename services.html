@@ -114,6 +114,22 @@
                 Service</button><br><br>
             <hr>
 
+            <!-- Rebound Tanks Service Section -->
+            <h3 class="text-2xl font-bold mb-6 text-gray-800 mt-8">Rebound Tanks</h3>
+            <p id="rebound-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
+                Your Link Code: <span class="font-mono text-indigo-600 blur-sm" id="rebound-code-span"></span><br>
+                <button id="toggle-rebound-code-visibility"
+                    class="mt-2 px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300 transition duration-150">Show
+                    Code</button>
+                <button id="enable-rebound-button"
+                    class="mt-2 ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition duration-150">Copy</button>
+            </p>
+            <button id="enable-rebound-button"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Enable
+                Service</button><br><br>
+            <hr>
+            <!-- End Rebound Tanks Service Section -->
+            
             <!-- STBG Service Section -->
             <h3 class="text-2xl font-bold mb-6 text-gray-800 mt-8">Survival the Ball Game</h3>
             <p id="stbg-link-display" class="text-gray-700 text-base font-semibold mb-4 hidden">
@@ -188,6 +204,13 @@
             const tbpLinkCodeSpan = document.getElementById('tbp-code-span');
             const toggleCodeVisibilityButton = document.getElementById('toggle-code-visibility');
             const copyCodeButton = document.getElementById('copy-code-button');
+
+            // RBT Elements
+            const enableReboundButton = document.getElementById('enable-rebound-button');
+            const reboundLinkDisplay = document.getElementById('rebound-link-display');
+            const reboundLinkCodeSpan = document.getElementById('rebound-code-span');
+            const toggleReboundCodeVisibilityButton = document.getElementById('toggle-rebound-code-visibility');
+            const copyReboundCodeButton = document.getElementById('copy-rebound-code-button');
 
             // STBG Elements
             const enableSTBGButton = document.getElementById('enable-stbg-button');
@@ -318,6 +341,27 @@
                     tbpLinkDisplay.classList.add('hidden');
                     tbpLinkCodeSpan.textContent = '';
                     currentTBPLinkCode = null;
+                }
+            }
+
+            
+            function setReboundButtonState(state) {
+                if (state === 'enabled') {
+                    enableReboundButton.textContent = 'Disable Service';
+                    enableReboundButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                    enableReboundButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                    reboundLinkDisplay.classList.remove('hidden');
+                    reboundLinkCodeSpan.classList.add('blur-sm');
+                    reboundLinkCodeSpan.classList.remove('no-blur');
+                    toggleReboundCodeVisibilityButton.textContent = 'Show Code';
+                    isReboundCodeVisible = false;
+                } else {
+                    enableBeatrixButton.textContent = 'Enable Service';
+                    enableBeatrixButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    enableBeatrixButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                    beatrixLinkDisplay.classList.add('hidden');
+                    beatrixLinkCodeSpan.textContent = '';
+                    currentBeatrixLinkCode = null;
                 }
             }
 
@@ -467,6 +511,59 @@
                 } else {
                     currentTBPLinkCode = null;
                     setTBPButtonState('disabled');
+                }
+            }
+
+                        /**
+             * Checks if the Rebound Tanks service is enabled for the given user.
+             * Updates the button state and stores the LinkCode if found.
+             * Also updates the username in rbt_data if it has changed.
+             * @param {string} userId - The UUID of the current user.
+             */
+            async function checkReboundServiceStatus(userId) {
+                console.log('Checking Rebound Tanks service status...');
+                if (!userId) {
+                    console.warn('User ID not available for checking Rebound service status.');
+                    setReboundButtonState('disabled');
+                    return;
+                }
+
+                const { data: reboundService, error } = await supabaseClient
+                    .from('rbt_data')
+                    .select('LinkCode, username')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') {
+                    console.error('Error fetching RBT service status:', error);
+                    setReboundButtonState('disabled');
+                    return;
+                }
+
+                if (reboundService) {
+                    currentReboundLinkCode = reboundService.ReboundLinkCode;
+                    reboundLinkCodeSpan.textContent = currentReboundLinkCode;
+                    setReboundButtonState('enabled');
+
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    const currentDisplayName = user.user_metadata.display_name || user.email;
+
+                    if (reboundService.username !== currentDisplayName) {
+                        console.log('Rebound Tanks username out of sync. Updating...');
+                        const { error: updateError } = await supabaseClient
+                            .from('rbt_data')
+                            .update({ username: currentDisplayName })
+                            .eq('user_id', userId);
+
+                        if (updateError) {
+                            console.error('Error updating Rebound Tanks username:', updateError.message);
+                        } else {
+                            console.log('Rebound Tanks username updated successfully.');
+                        }
+                    }
+                } else {
+                    currentReboundLinkCode = null;
+                    setReboundButtonState('disabled');
                 }
             }
 
@@ -711,6 +808,75 @@
                 await checkTBPServiceStatus(user.id);
             });
 
+                        // Handle "Enable/Disable Service" button click for Rebound Tanks
+            enableReboundButton.addEventListener('click', async () => {
+                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+                if (sessionError || !session) {
+                    window.location.href = 'magic.html';
+                    return;
+                }
+                const user = session.user;
+                if (!user) {
+                    window.location.href = 'magic.html';
+                    return;
+                }
+
+                if (enableTBPButton.textContent === 'Enable Service') {
+                    const confirmTOS = confirm("By enabling this service, you agree to the Tank Ball Physics Terms of Service (terms.rivergames.ca/tank-ball-physics)");
+                    if (!confirmTOS) { return; }
+                    console.log('Enable Service button clicked for Rebound Tanks.');
+                    setButtonLoading(true, enableReboundButton, 'Enable Service', 'Enabling...');
+                    try {
+                        const newCode = generateLinkCode();
+                        const { data, error } = await supabaseClient
+                            .from('rbt_data')
+                            .insert([{ LinkCode: newCode, user_id: user.id, username: user.user_metadata.display_name || user.email }]);
+                        if (error) {
+                            console.error('Error inserting Link Code:', error);
+                            showMessage(`Failed to enable Rebound Tanks service: ${error.message}`, 'error', messageAreaServices);
+                        } else {
+                            console.log('Rebound Tanks Link Code inserted successfully:', data);
+                            showMessage('Rebound Tanks service enabled successfully!', 'success', messageAreaServices);
+                            currentReboundLinkCode = newCode;
+                            reboundLinkCodeSpan.textContent = currentReboundLinkCode;
+                            setReboundButtonState('enabled');
+                        }
+                    } catch (err) {
+                        console.error('Unexpected error during Rebound Tanks service enablement:', err);
+                        showMessage('An unexpected error occurred while enabling Rebound Tanks service.', 'error', messageAreaServices);
+                    } finally {
+                        setButtonLoading(false, enableReboundButton, 'Enable Service', 'Enabling...');
+                    }
+                } else if (enableReboundButton.textContent === 'Disable Service') {
+                    const confirmDeactivation = confirm("Disabling this service will make you lose all the data you saved with it. Are you sure you want to disable it?");
+                    if (!confirmDeactivation) { return; }
+                    console.log('Disable Service button clicked.');
+                    setButtonLoading(true, enableReboundButton, 'Disable Service', 'Disabling...');
+                    try {
+                        const { error } = await supabaseClient
+                            .from('rbt_data')
+                            .delete()
+                            .eq('user_id', user.id)
+                            .eq('LinkCode', currentReboundLinkCode);
+                        if (error) {
+                            console.error('Error disabling Rebound Tanks service:', error);
+                            showMessage(`Failed to disable Rebound Tanks service: ${error.message}`, 'error', messageAreaServices);
+                        } else {
+                            console.log('Rebound Tanks Service disabled successfully.');
+                            showMessage('Rebound Tanks service disabled successfully!', 'success', messageAreaServices);
+                            currentReboundLinkCode = null;
+                            setReboundButtonState('disabled');
+                        }
+                    } catch (err) {
+                        console.error('Unexpected error during Rebound service disablement:', err);
+                        showMessage('An unexpected error occurred while disabling Rebound service.', 'error', messageAreaServices);
+                    } finally {
+                        setButtonLoading(false, enableReboundButton, 'Disable Service', 'Disabling...');
+                    }
+                }
+                await checkReboundServiceStatus(user.id);
+            });
+
             // Handle "Enable/Disable Service" button click for STBG
             enableSTBGButton.addEventListener('click', async () => {
                 const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
@@ -937,6 +1103,36 @@
                     try {
                         const tempInput = document.createElement('textarea');
                         tempInput.value = currentTBPLinkCode;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempInput);
+                    } catch (err) {
+                        console.error('Failed to copy text:', err);
+                    }
+                }
+            });
+
+                        // Rebound Show/Hide Code
+            toggleCodeVisibilityButton.addEventListener('click', () => {
+                if (isTBPCodeVisible) {
+                    reboundLinkCodeSpan.classList.add('blur-sm');
+                    reboundLinkCodeSpan.classList.remove('no-blur');
+                    toggleCodeVisibilityButton.textContent = 'Show Code';
+                } else {
+                    reboundLinkCodeSpan.classList.remove('blur-sm');
+                    reboundLinkCodeSpan.classList.add('no-blur');
+                    toggleCodeVisibilityButton.textContent = 'Hide Code';
+                }
+                isReboundCodeVisible = !isReboundCodeVisible;
+            });
+
+            // Copy Rebound Code
+            copyCodeButton.addEventListener('click', async () => {
+                if (currentReboundLinkCode) {
+                    try {
+                        const tempInput = document.createElement('textarea');
+                        tempInput.value = currentReboundLinkCode;
                         document.body.appendChild(tempInput);
                         tempInput.select();
                         document.execCommand('copy');
